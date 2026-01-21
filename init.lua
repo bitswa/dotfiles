@@ -1,0 +1,135 @@
+-- OPTIONS 
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
+vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", {silent = true})
+
+vim.opt.number = true
+vim.opt.relativenumber = true
+
+vim.opt.signcolumn = "yes"
+
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+vim.opt.textwidth = 80
+
+vim.diagnostic.config({ virtual_text = true })
+
+-- PACKAGES 
+local base = "https://github.com/"
+
+vim.pack.add({
+  base .. "nvim-tree/nvim-web-devicons",
+  base .. "nvim-lualine/lualine.nvim",
+  base .. "projekt0n/github-nvim-theme",
+  base .. "nvim-treesitter/nvim-treesitter",
+  base .. "rafamadriz/friendly-snippets",
+  base .. "saghen/blink.cmp",
+  base .. "neovim/nvim-lspconfig",
+  base .. "mason-org/mason.nvim",
+  base .. "mason-org/mason-lspconfig.nvim",
+  base .. "WhoIsSethDaniel/mason-tool-installer.nvim",
+  base .. "nvim-mini/mini.move",
+  base .. "L3MON4D3/LuaSnip",
+  base .. "rafamadriz/friendly-snippets",
+  base .. "nvim-lua/plenary.nvim",
+  base .. "nvim-telescope/telescope-file-browser.nvim",
+  { src = base .. "nvim-telescope/telescope-fzf-native.nvim", build = "make"},
+  base .. "nvim-telescope/telescope.nvim",
+}, { confirm = false })
+
+require("nvim-treesitter.install").update("all")
+require("nvim-treesitter.config").setup({ auto_install = true })
+
+-- COLORSCHEME
+vim.cmd("colorscheme github_dark_colorblind")
+
+-- LUALINE
+require("configs.lualine")
+
+-- BLINK
+require("blink.cmp").setup({
+  fuzzy = { implementation = "lua" },
+  keymap = {
+    preset = "default",
+    ["<Up>"] = { "select_prev", "fallback" },
+    ["<Down>"] = { "select_prev", "fallback" },
+    ["<C-space>"] = { function(cmp) cmp.show({ providers = { "snippets" } }) end },
+  },
+  completion = {
+    accept = {
+      dot_repeat = true,
+      auto_brackets = {
+        enabled = true,
+        semantic_token_resolution = {
+          enabled = true,
+          timeout_ms = 400,
+        },
+      },
+    },
+  },
+})
+
+require("mini.move").setup()
+require("luasnip.loaders.from_vscode").lazy_load()
+
+-- TELESCOPE
+local builtin = require('telescope.builtin')
+--vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
+vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
+vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+
+vim.keymap.set("n", "<leader>ff", ":Telescope file_browser<CR>")
+
+local fb_actions = require "telescope".extensions.file_browser.actions
+
+require("telescope").setup {
+  defaults = {},
+  extensions = {
+    file_browser = {
+      hijack_netrw = true,
+      mappings = {
+        ["i"] = {
+          ["<C-h>"] = fb_actions.goto_home_dir,
+          ["<C-a>"] = fb_actions.create,
+        },
+      },
+    },
+    fzf = {
+      fuzzy = true,
+      override_generic_sorter = true,
+      override_file_sorter = true,
+      case_mode = "smart_case",
+    },
+  },
+  pickers = {
+    find_files = {
+      theme = "dropdown",
+    },
+  },
+}
+require("telescope").load_extension("fzf")
+
+
+-- MASON & LSP
+local lsp_servers = {
+  lua_ls = { Lua = { workspace = { library = vim.api.nvim_get_runtime_file("lua", true) } }, },
+}
+
+require("mason").setup()
+require("mason-lspconfig").setup()
+require("mason-tool-installer").setup({
+  ensure_installed = vim.tbl_keys(lsp_servers),
+})
+
+for server, config in pairs(lsp_servers) do
+  vim.lsp.config(server, {
+    settings = config,
+
+    on_attach = function(_, bufnr)
+      vim.keymap.set("n", "grd", vim.lsp.buf.definition, { buffer = bufnr })
+    end,
+  })
+end
