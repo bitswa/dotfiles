@@ -35,7 +35,8 @@ vim.pack.add({
   base .. "rafamadriz/friendly-snippets",
   base .. "nvim-lua/plenary.nvim",
   base .. "nvim-telescope/telescope-file-browser.nvim",
-  { src = base .. "nvim-telescope/telescope-fzf-native.nvim", build = "make"},
+  base .. "akinsho/bufferline.nvim",
+  --{ src = base .. "nvim-telescope/telescope-fzf-native.nvim", build = "make"},
   base .. "nvim-telescope/telescope.nvim",
 }, { confirm = false })
 
@@ -44,6 +45,10 @@ require("nvim-treesitter.config").setup({ auto_install = true })
 
 -- COLORSCHEME
 vim.cmd("colorscheme github_dark_colorblind")
+
+-- BUFFERLINE
+vim.opt.termguicolors = true
+require("bufferline").setup{}
 
 -- LUALINE
 require("configs.lualine")
@@ -97,12 +102,14 @@ require("telescope").setup {
         },
       },
     },
+    --[[
     fzf = {
       fuzzy = true,
       override_generic_sorter = true,
       override_file_sorter = true,
       case_mode = "smart_case",
     },
+    ]]
   },
   pickers = {
     find_files = {
@@ -110,7 +117,7 @@ require("telescope").setup {
     },
   },
 }
-require("telescope").load_extension("fzf")
+--require("telescope").load_extension("fzf")
 
 
 -- MASON & LSP
