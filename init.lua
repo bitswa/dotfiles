@@ -1,7 +1,6 @@
 -- OPTIONS 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", {silent = true})
 
 vim.opt.number = true
@@ -14,7 +13,42 @@ vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 vim.opt.textwidth = 80
 
+vim.o.laststatus = 2
+vim.opt.termguicolors = true
 vim.diagnostic.config({ virtual_text = true })
+
+-- KEYMAPS
+local keymap = vim.keymap
+local opts = { noremap = true, silent = true }
+
+-- New Tab
+keymap.set("n", "te", ":tabedit")
+keymap.set("n", "<tab>", ":tabnext<Return>", opts)
+keymap.set("n", "<s-tab>", ":tabprev<Return>", opts)
+
+-- Split window
+keymap.set("n", "ss", ":split<Return>", opts)
+keymap.set("n", "sv", ":vsplit<Return>", opts)
+
+-- Move window
+keymap.set("n", "sh", "<C-w>h")
+keymap.set("n", "sk", "<C-w>k")
+keymap.set("n", "sj", "<C-w>j")
+keymap.set("n", "sl", "<C-w>l")
+
+-- Resize window
+keymap.set("n", "<C-w><left>", "<C-w><")
+keymap.set("n", "<C-w><right>", "<C-w>>")
+keymap.set("n", "<C-w><up>", "<C-w>+")
+keymap.set("n", "<C-w><down>", "<C-w>-")
+
+-- DIAGNOSTICS (TROUBLE)
+keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>")
+keymap.set("n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>")
+keymap.set("n", "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>")
+keymap.set("n", "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>")
+keymap.set("n", "<leader>xL", "<cmd>Trouble loclist toggle<cr>")
+keymap.set("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>")
 
 -- PACKAGES 
 local base = "https://github.com/"
@@ -37,18 +71,32 @@ vim.pack.add({
   base .. "nvim-telescope/telescope-file-browser.nvim",
   base .. "akinsho/bufferline.nvim",
   --{ src = base .. "nvim-telescope/telescope-fzf-native.nvim", build = "make"},
-  base .. "nvim-telescope/telescope.nvim",
+ base .. "nvim-telescope/telescope.nvim",
+  base .. "folke/trouble.nvim",
 }, { confirm = false })
 
 require("nvim-treesitter.install").update("all")
 require("nvim-treesitter.config").setup({ auto_install = true })
 
+-- TROUBLE
+require("trouble").setup({})
+
 -- COLORSCHEME
 vim.cmd("colorscheme github_dark_colorblind")
 
 -- BUFFERLINE
-vim.opt.termguicolors = true
 require("bufferline").setup{}
+
+local bufferline = require('bufferline')
+bufferline.setup({
+    options = {
+        style_preset = {
+            bufferline.style_preset.minimal,
+            bufferline.style_preset.no_italic,
+            bufferline.style_preset.no_bold
+        },
+    }
+})
 
 -- LUALINE
 require("configs.lualine")
@@ -86,7 +134,7 @@ vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live gr
 vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
 
-vim.keymap.set("n", "<leader>ff", ":Telescope file_browser<CR>")
+vim.keymap.set("n", "<leader>ff", ":Telescope file_browser path=%:p:h select_buffer=true<CR>")
 
 local fb_actions = require "telescope".extensions.file_browser.actions
 

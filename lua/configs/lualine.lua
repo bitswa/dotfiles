@@ -2,6 +2,7 @@
 -- Author: shadmansaleh
 -- Credit: glepnir
 local lualine = require('lualine')
+--local trouble = require('trouble')
 
 -- Color table for highlights
 -- stylua: ignore
