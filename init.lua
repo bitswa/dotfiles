@@ -57,6 +57,7 @@ vim.pack.add({
   base .. "nvim-tree/nvim-web-devicons",
   base .. "nvim-lualine/lualine.nvim",
   base .. "projekt0n/github-nvim-theme",
+  base .. "datsfilipe/vesper.nvim",
   base .. "nvim-treesitter/nvim-treesitter",
   base .. "rafamadriz/friendly-snippets",
   base .. "saghen/blink.cmp",
@@ -82,10 +83,17 @@ require("nvim-treesitter.config").setup({ auto_install = true })
 require("trouble").setup({})
 
 -- COLORSCHEME
-vim.cmd("colorscheme github_dark_colorblind")
+--vim.cmd("colorscheme github_dark_colorblind")
+vim.cmd("colorscheme vesper")
+
+require("vesper").setup({
+  transparent = false,
+})
 
 -- BUFFERLINE
-require("bufferline").setup{}
+require("bufferline").setup{
+  highlights = require("vesper").bufferline.highlights
+}
 
 local bufferline = require('bufferline')
 bufferline.setup({
