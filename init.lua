@@ -1,23 +1,46 @@
--- OPTIONS 
+-- Basic settings
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.cursorline = true
+vim.opt.wrap = false
+vim.opt.scrolloff = 10
+vim.opt.sidescrolloff = 8
+
+-- Identation
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.softtabstop = 2
+vim.opt.expandtab = true
+vim.opt.smartindent = true
+vim.opt.autoindent = true
+
+-- Search settings
+vim.opt.ignorecase = true     -- Case insensitive search
+vim.opt.smartcase = true      -- Case sensitive if uppercase in search
+vim.opt.hlsearch = true       -- Don't highlight search result
+vim.opt.incsearch = true      -- Show matches as you type
+
+-- Visual settings
+vim.opt.termguicolors = true
+vim.opt.signcolumn = "yes"
+vim.opt.colorcolumn = "100"
+vim.opt.showmatch = true
+vim.opt.matchtime = 2
+vim.opt.cmdheight = 1
+--vim.opt.completeopt = "menuone,noinsert,noselect"
+vim.opt.showmode = true
+
+
+vim.opt.textwidth = 80
+vim.o.laststatus = 2
+vim.diagnostic.config({ virtual_text = true })
+
+
+-- KEYMAPS
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", {silent = true})
 
-vim.opt.number = true
-vim.opt.relativenumber = true
-
-vim.opt.signcolumn = "yes"
-
-vim.opt.tabstop = 2
-vim.opt.shiftwidth = 2
-vim.opt.expandtab = true
-vim.opt.textwidth = 80
-
-vim.o.laststatus = 2
-vim.opt.termguicolors = true
-vim.diagnostic.config({ virtual_text = true })
-
--- KEYMAPS
 local keymap = vim.keymap
 local opts = { noremap = true, silent = true }
 
@@ -72,12 +95,16 @@ vim.pack.add({
   base .. "nvim-telescope/telescope-file-browser.nvim",
   base .. "akinsho/bufferline.nvim",
   --{ src = base .. "nvim-telescope/telescope-fzf-native.nvim", build = "make"},
- base .. "nvim-telescope/telescope.nvim",
+  base .. "nvim-telescope/telescope.nvim",
   base .. "folke/trouble.nvim",
+  base .. "folke/which-key.nvim"
+
 }, { confirm = false })
 
 require("nvim-treesitter.install").update("all")
 require("nvim-treesitter.config").setup({ auto_install = true })
+
+-- WHICH-KEY
 
 -- TROUBLE
 require("trouble").setup({})
