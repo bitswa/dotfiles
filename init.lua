@@ -27,7 +27,7 @@ vim.opt.colorcolumn = "100"
 vim.opt.showmatch = true
 vim.opt.matchtime = 2
 vim.opt.cmdheight = 1
---vim.opt.completeopt = "menuone,noinsert,noselect"
+vim.opt.completeopt = "menuone,noinsert,noselect"
 vim.opt.showmode = true
 
 
@@ -93,13 +93,32 @@ vim.pack.add({
   base .. "rafamadriz/friendly-snippets",
   base .. "nvim-lua/plenary.nvim",
   base .. "nvim-telescope/telescope-file-browser.nvim",
-  base .. "akinsho/bufferline.nvim",
+  -- base .. "akinsho/bufferline.nvim",
+  base .. "alvarosevilla95/luatab.nvim",
   --{ src = base .. "nvim-telescope/telescope-fzf-native.nvim", build = "make"},
   base .. "nvim-telescope/telescope.nvim",
   base .. "folke/trouble.nvim",
-  base .. "folke/which-key.nvim"
+  base .. "folke/which-key.nvim",
+  base .. "ya2s/nvim-cursorline"
 
 }, { confirm = false })
+
+-- Cursorline
+
+require('nvim-cursorline').setup {
+  disable_filetypes = {},
+  disable_buftypes = {},
+  cursorline = {
+    enable = true,
+    timeout = 1000,
+    number = false
+  },
+  cursorword = {
+    enable = true,
+    min_length = 3,
+    hl = { underline = true }
+  }
+}
 
 require("nvim-treesitter.install").update("all")
 require("nvim-treesitter.config").setup({ auto_install = true })
@@ -117,21 +136,24 @@ require("vesper").setup({
   transparent = false,
 })
 
--- BUFFERLINE
-require("bufferline").setup{
-  highlights = require("vesper").bufferline.highlights
-}
+-- Luatab
+--require("luatab").setup({})
 
-local bufferline = require('bufferline')
-bufferline.setup({
-    options = {
-        style_preset = {
-            bufferline.style_preset.minimal,
-            bufferline.style_preset.no_italic,
-            bufferline.style_preset.no_bold
-        },
-    }
-})
+-- BUFFERLINE
+-- require("bufferline").setup{
+--   highlights = require("vesper").bufferline.highlights
+-- }
+--
+-- local bufferline = require('bufferline')
+-- bufferline.setup({
+--     options = {
+--         style_preset = {
+--             bufferline.style_preset.minimal,
+--             bufferline.style_preset.no_italic,
+--             bufferline.style_preset.no_bold
+--         },
+--     }
+-- })
 
 -- LUALINE
 require("configs.lualine")
@@ -204,22 +226,24 @@ require("telescope").setup {
 
 
 -- MASON & LSP
-local lsp_servers = {
-  lua_ls = { Lua = { workspace = { library = vim.api.nvim_get_runtime_file("lua", true) } }, },
-}
+-- local lsp_servers = {
+--   lua_ls = { Lua = { workspace = { library = vim.api.nvim_get_runtime_file("lua", true) } }, },
+-- }
 
 require("mason").setup()
-require("mason-lspconfig").setup()
-require("mason-tool-installer").setup({
-  ensure_installed = vim.tbl_keys(lsp_servers),
+require("mason-lspconfig").setup({
+  automatic_enable = true
 })
-
-for server, config in pairs(lsp_servers) do
-  vim.lsp.config(server, {
-    settings = config,
-
-    on_attach = function(_, bufnr)
-      vim.keymap.set("n", "grd", vim.lsp.buf.definition, { buffer = bufnr })
-    end,
-  })
-end
+--require("mason-tool-installer").setup({
+--  ensure_installed = vim.tbl_keys(lsp_servers),
+--})
+--
+-- for server, config in pairs(lsp_servers) do
+--   vim.lsp.config(server, {
+--     settings = config,
+--
+--     on_attach = function(_, bufnr)
+--       vim.keymap.set("n", "grd", vim.lsp.buf.definition, { buffer = bufnr })
+--     end,
+--   })
+-- end
